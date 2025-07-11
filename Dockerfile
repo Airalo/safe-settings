@@ -1,6 +1,6 @@
 FROM node:20-alpine
 WORKDIR /opt/safe-settings
-ENV NODE_ENV production
+ENV NODE_ENV=production
 ## Set the Labels
 LABEL version="1.0" \
       description="Probot app which is a modified version of Settings Probot GitHub App" \
@@ -22,4 +22,4 @@ USER node
 
 ## This does not start properly when using the ['npm','start'] format
 ## so stick with just calling it outright
-CMD npm start
+CMD ["npm", "start"]
