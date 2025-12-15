@@ -6,7 +6,8 @@ describe('Labels', () => {
 
   function configure (config) {
     const nop = false
-    return new Labels(nop, github, { owner: 'bkeepers', repo: 'test' }, config, log)
+    const errors = []
+    return new Labels(nop, github, { owner: 'bkeepers', repo: 'test' }, config, log, errors)
   }
 
   beforeEach(() => {
@@ -18,7 +19,7 @@ describe('Labels', () => {
       issues: {
         listLabelsForRepo: {
           endpoint: {
-            merge: jest.fn().mockImplementation(() => {})
+            merge: jest.fn().mockImplementation(() => { })
           }
         },
         createLabel: jest.fn().mockImplementation(() => Promise.resolve()),
@@ -26,7 +27,7 @@ describe('Labels', () => {
         updateLabel: jest.fn().mockImplementation(() => Promise.resolve())
       }
     }
-    log = { debug: jest.fn(), error: console.error }
+    log = { debug: jest.fn(), error: console.error, info: jest.fn() }
   })
 
   describe('sync', () => {
@@ -136,6 +137,27 @@ describe('Labels', () => {
           name: 'new-name',
           color: 'FFFFFF',
           description: '',
+          headers: { accept: 'application/vnd.github.symmetra-preview+json' }
+        })
+
+        expect(github.issues.deleteLabel).not.toHaveBeenCalledWith({
+          owner: 'bkeepers',
+          repo: 'test',
+          name: 'keep-me',
+          headers: { accept: 'application/vnd.github.symmetra-preview+json' }
+        })
+
+        expect(github.issues.deleteLabel).not.toHaveBeenCalledWith({
+          owner: 'bkeepers',
+          repo: 'test',
+          name: 'things-to-keep',
+          headers: { accept: 'application/vnd.github.symmetra-preview+json' }
+        })
+
+        expect(github.issues.deleteLabel).not.toHaveBeenCalledWith({
+          owner: 'bkeepers',
+          repo: 'test',
+          name: 'released on @7.x.x',
           headers: { accept: 'application/vnd.github.symmetra-preview+json' }
         })
 
